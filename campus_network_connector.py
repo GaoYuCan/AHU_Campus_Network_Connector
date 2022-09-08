@@ -1,3 +1,4 @@
+import base64
 import socket
 import requests
 import os
@@ -38,9 +39,10 @@ def set_account():
     password = input("密码：")
     # 写入信息
     cache_file = open(get_cache_file_path(), "wb")
-    cache_file.write(account.encode())
+
+    cache_file.write(base64.b64encode(account.encode()))
     cache_file.write(os.linesep.encode())
-    cache_file.write(password.encode())
+    cache_file.write(base64.b64encode(password.encode()))
     cache_file.close()
 
 
@@ -48,8 +50,8 @@ def get_account():
     cache_file = open(get_cache_file_path(), "r")
     if cache_file is None:
         return None
-    account = cache_file.readline().strip()
-    password = cache_file.readline().strip()
+    account = base64.b64decode(cache_file.readline().strip()).decode()
+    password = base64.b64decode(cache_file.readline().strip()).decode()
     cache_file.close()
     return account, password
 
@@ -76,4 +78,3 @@ if matchRes is not None:
             print("检测到密码错误，已经为您删除配置文件，请关闭本窗口后重新输入账号，密码尝试连接！")
     else:
         print("未知异常，即常见的 AC认证失败")
-
