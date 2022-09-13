@@ -69,6 +69,8 @@ regex = re.compile(r"dr1003\((.+?)\)", re.I)
 matchRes = regex.match(resp.text)
 if matchRes is not None:
     respJson = json.loads(matchRes.group(1))
+    if 'ret_code' not in respJson.keys():
+        print('登录成功！')
     ret_code = respJson['ret_code']
     if ret_code in ret_message_map.keys():
         print(ret_message_map[ret_code])
